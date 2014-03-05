@@ -92,12 +92,17 @@ string getLogLineDate()
 
 string createSyslogLine(string _event, FormFields _values)
 {
-	//TODO: use appender
-	auto line = getLogLineDate();
+	import std.array;
 
-	line ~= " " ~ hostName;
+	Appender!string line;
 
-	line ~= " " ~ _event;
+	line.put(getLogLineDate());
+
+	line ~= " "; 
+	line ~= hostName;
+
+	line ~= " ";
+	line ~= _event;
 
 	if(_values.length > 0)
 	{
@@ -105,11 +110,16 @@ string createSyslogLine(string _event, FormFields _values)
 		
 		foreach(k, v; _values)
 		{
-			line ~= k ~ "=\"" ~ v ~ "\" ";
+			line ~= k;
+			line ~= "=\"";
+			line ~= v; 
+			line ~= "\" ";
 		}
 
 		line ~= "]";
 	}
 
-	return (line ~ '\n');
+	line ~= "\n";
+
+	return line.data;
 }
