@@ -1,0 +1,5 @@
+.dub/
+libeay32.dll
+libevent.dll
+ssleay32.dll
+syslogservice.exe
