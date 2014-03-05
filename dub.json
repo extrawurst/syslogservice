@@ -1,6 +1,7 @@
 {
 	"name": "syslogservice",
 	"description": "webservice that gathers arbitrary requests in syslog format on disk (we use this primarily to feed splunk)",
+	"license": "MIT"
 	"homepage": "https://github.com/Extrawurst/syslogservice",
 	"copyright": "Copyright © 2014, Stephan Dilly",
 	"authors": [
