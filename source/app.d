@@ -6,7 +6,7 @@ import std.stdio;
 
 ushort port = 8888;
 string hostName = "hostUnknown";
-string logFolder = "logs/";
+string logFolder = "./";
 bool quiet = true;
 
 shared static this()
@@ -18,35 +18,43 @@ shared static this()
 
 	auto settings = new HTTPServerSettings();
 	settings.port = port;
+	settings.options = HTTPServerOption.parseFormBody;
 	settings.bindAddresses = ["0.0.0.0"];
 
 	listenHTTP(settings, &handleRequest);
 
 	logInfo("hostname: %s",hostName);
-	logInfo("quiet: %s\n",quiet);
+	logInfo("quiet: %s",quiet);
+	logInfo("logfolder: '%s'",logFolder);
+	logInfo(" ");
 }
 
 void handleRequest(HTTPServerRequest req, HTTPServerResponse res)
 {
-	scope(exit)
+	res.statusCode = 200;
+	res.writeBody("");
+
+	auto lastSlash = req.requestURL.lastIndexOf('/');
+	if(lastSlash == -1)
 	{
-		res.statusCode = 204;
-		res.writeBody("");
+		logError("req has no event set: %s",req.requestURL);
+		return;
 	}
 
-	syslog(req.form, req.peer, req.clientAddress.port, req.headers["user-agent"]);
+	auto event = req.requestURL[lastSlash+1..$];
+
+	if(event.length == 0)
+	{
+		logError("req has no event set: %s",req.requestURL);
+		return;
+	}
+
+	syslog(event, req.form, req.peer, req.clientAddress.port, req.headers["user-agent"]);
 }
 
-void syslog(FormFields _values, string _ip, ushort _port, string _userAgent)
+void syslog(string _event, FormFields _values, string _ip, ushort _port, string _userAgent)
 {
-	//note: just add those two in the start message
-	if(_values["_event"] == "app-startup")
-	{
-		_values["ip"] = _ip;
-		_values["user-agent"] = _userAgent;
-	}
-
-	auto logline = createSyslogLine(_values);
+	auto logline = createSyslogLine(_event, _values);
 
 	if(!quiet)
 		logInfo("%s",logline);
@@ -82,25 +90,26 @@ string getLogLineDate()
 				  currentTime.second);
 }
 
-string createSyslogLine(FormFields _values)
+string createSyslogLine(string _event, FormFields _values)
 {
 	//TODO: use appender
-	auto eventName = _values["_event"];
-	_values.remove("_event");
-
 	auto line = getLogLineDate();
 
 	line ~= " " ~ hostName;
 
-	line ~= " " ~ eventName;
+	line ~= " " ~ _event;
 
-	line ~= " - [";
-	
-	foreach(k,v; _values)
+	if(_values.length > 0)
 	{
-		line ~= k ~ "=\"" ~ v ~ "\" ";
-	}
-	line ~= "]\n";
+		line ~= " - [";
+		
+		foreach(k, v; _values)
+		{
+			line ~= k ~ "=\"" ~ v ~ "\" ";
+		}
 
-	return line;
+		line ~= "]";
+	}
+
+	return (line ~ '\n');
 }
