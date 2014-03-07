@@ -63,6 +63,10 @@ private:
 			return;
 		}
 
+		//note: ignore this default request
+		if(event == "favicon.ico")
+			return;
+
 		if(m_requestModifierCallback)
 			m_requestModifierCallback(event, req);
 		
