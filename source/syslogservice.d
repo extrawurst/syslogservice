@@ -47,21 +47,26 @@ private:
 	{
 		res.statusCode = 200;
 		res.writeBody("");
-		
+
+		if(req.requestURL.startsWith("/"))
+			req.requestURL = req.requestURL[1..$];
+
 		auto lastSlash = req.requestURL.lastIndexOf('/');
 		if(lastSlash == -1)
 		{
 			logError("req has no event set: %s",req.requestURL);
 			return;
 		}
+
+		auto eventNames = req.requestURL.split("/");
 		
-		auto event = req.requestURL[lastSlash+1..$];
-		
-		if(event.length == 0)
+		if(eventNames.length == 0 || eventNames[$-1].length == 0)
 		{
 			logError("req has no event set: %s",req.requestURL);
 			return;
 		}
+
+		auto event = eventNames[$-1];
 
 		//note: ignore this default request
 		if(event == "favicon.ico")
@@ -70,12 +75,12 @@ private:
 		if(m_requestModifierCallback)
 			m_requestModifierCallback(event, req);
 		
-		syslog(event, req.form, req.peer, req.clientAddress.port, req.headers["user-agent"]);
+		syslog(eventNames, req.form, req.peer, req.clientAddress.port, req.headers["user-agent"]);
 	}
 
-	void syslog(string _event, FormFields _values, string _ip, ushort _port, string _userAgent)
+	void syslog(string[] _events, FormFields _values, string _ip, ushort _port, string _userAgent)
 	{
-		auto logline = createSyslogLine(_event, _values);
+		auto logline = createSyslogLine(_events, _values);
 		
 		if(!m_quiet)
 			logInfo("%s",logline);
@@ -111,7 +116,7 @@ private:
 		currentTime.second);
 	}
 	
-	string createSyslogLine(string _event, FormFields _values)
+	string createSyslogLine(string[] _events, FormFields _values)
 	{
 		import std.array;
 		
@@ -121,13 +126,19 @@ private:
 		
 		line ~= " "; 
 		line ~= m_hostName;
-		
-		line ~= " ";
-		line ~= _event;
+
+		foreach(e; _events[0..$-1])
+		{
+			line ~= " ";
+			line ~= e;
+		}
+
+		line ~= " - ";
+		line ~= _events[$-1];
 		
 		if(_values.length > 0)
 		{
-			line ~= " - [";
+			line ~= " [";
 			
 			foreach(k, v; _values)
 			{

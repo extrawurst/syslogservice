@@ -4,7 +4,7 @@ import vibe.core.core:runTask;
 import vibe.http.client;
 
 ///
-final class SyslogServiceClient
+final class SyslogServiceClient(alias AddParams=null)
 {
 private:
 	immutable string url;
@@ -14,21 +14,27 @@ public:
 	this(in string _url)
 	{
 		url = _url;
+
+		if(!url.endsWith("/"))
+			url~="/";
 	}
 
 	///
 	void log(string _event)(in string[string] params)
 	{
-		import vibe.http.form;
-
 		if(url.length == 0)
 			return;
 
 		runTask({
-			requestHTTP(url~_event,
-			            (scope HTTPClientRequest req) {
+			auto requestUrl = url~getAdditionalUrlString()~_event;
+
+			logInfo("syslog: %s",requestUrl);
+
+			requestHTTP(requestUrl,
+			(scope HTTPClientRequest req) {
 				req.method = HTTPMethod.POST;
-				
+
+				import vibe.http.form;
 				req.writeFormBody(params);
 			});
 		});
@@ -41,13 +47,30 @@ public:
 			return;
 
 		runTask({
-			requestHTTP(url~_event,
-			            (scope HTTPClientRequest req) {
+			auto requestUrl = url~getAdditionalUrlString()~_event;
+			
+			logInfo("syslog: %s",requestUrl);
+
+			requestHTTP(requestUrl,
+			(scope HTTPClientRequest req) {
 				req.method = HTTPMethod.POST;
 				
 				req.writeBody(cast(ubyte[])"");
 			});
 		});
+	}
+
+	///
+	private string getAdditionalUrlString()
+	{
+		static if(AddParams!=null)
+		{
+			return AddParams()~"/";
+		}
+		else
+		{
+			return "";
+		}
 	}
 }
 
