@@ -69,11 +69,11 @@ private:
 		if(m_requestModifierCallback)
 			m_requestModifierCallback(event, req);
 		
-		syslog(eventNames, req.form, req.peer, req.clientAddress.port, req.headers["user-agent"]);
+		syslog(eventNames, req.form, req.peer, req.clientAddress.port);
 	}
 
 	///
-	void syslog(string[] _events, FormFields _values, string _ip, ushort _port, string _userAgent)
+	void syslog(string[] _events, FormFields _values, string _ip, ushort _port)
 	{
 		auto logline = createSyslogLine(_events, _values);
 		
