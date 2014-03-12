@@ -33,10 +33,10 @@ public:
 			requestHTTP(requestUrl,
 			(scope HTTPClientRequest req) {
 				req.method = HTTPMethod.POST;
-
+	
 				import vibe.http.form;
 				req.writeFormBody(params);
-			});
+			},(scope HTTPClientResponse res) {});
 		});
 	}
 
@@ -54,7 +54,7 @@ public:
 				req.method = HTTPMethod.POST;
 				
 				req.writeBody(cast(ubyte[])"");
-			});
+			},(scope HTTPClientResponse res) {});
 		});
 	}
 
