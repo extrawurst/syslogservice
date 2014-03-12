@@ -13,10 +13,12 @@ public:
 	///
 	this(in string _url)
 	{
-		url = _url;
+		import std.string:endsWith;
 
-		if(!url.endsWith("/"))
-			url~="/";
+		if(!_url.endsWith("/"))
+			url = _url~"/";
+		else
+			url = _url;
 	}
 
 	///
@@ -27,8 +29,6 @@ public:
 
 		runTask({
 			auto requestUrl = url~getAdditionalUrlString()~_event;
-
-			logInfo("syslog: %s",requestUrl);
 
 			requestHTTP(requestUrl,
 			(scope HTTPClientRequest req) {
@@ -48,8 +48,6 @@ public:
 
 		runTask({
 			auto requestUrl = url~getAdditionalUrlString()~_event;
-			
-			logInfo("syslog: %s",requestUrl);
 
 			requestHTTP(requestUrl,
 			(scope HTTPClientRequest req) {

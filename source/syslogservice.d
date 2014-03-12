@@ -43,6 +43,7 @@ private:
 		listenHTTP(settings, &handleRequest);
 	}
 
+	///
 	void handleRequest(HTTPServerRequest req, HTTPServerResponse res)
 	{
 		res.statusCode = 200;
@@ -50,13 +51,6 @@ private:
 
 		if(req.requestURL.startsWith("/"))
 			req.requestURL = req.requestURL[1..$];
-
-		auto lastSlash = req.requestURL.lastIndexOf('/');
-		if(lastSlash == -1)
-		{
-			logError("req has no event set: %s",req.requestURL);
-			return;
-		}
 
 		auto eventNames = req.requestURL.split("/");
 		
@@ -78,6 +72,7 @@ private:
 		syslog(eventNames, req.form, req.peer, req.clientAddress.port, req.headers["user-agent"]);
 	}
 
+	///
 	void syslog(string[] _events, FormFields _values, string _ip, ushort _port, string _userAgent)
 	{
 		auto logline = createSyslogLine(_events, _values);
@@ -87,7 +82,8 @@ private:
 		
 		appendToFile(m_logFolder ~ getLogFileName(),logline);
 	}
-	
+
+	///
 	string getLogFileName()
 	{
 		auto currentTime = Clock.currTime();
@@ -98,7 +94,8 @@ private:
 		              currentTime.day,
 		              m_hostName);
 	}
-	
+
+	///
 	string getLogLineDate()
 	{
 		auto currentTime = Clock.currTime();
@@ -115,7 +112,8 @@ private:
 		currentTime.minute,
 		currentTime.second);
 	}
-	
+
+	///
 	string createSyslogLine(string[] _events, FormFields _values)
 	{
 		import std.array;
