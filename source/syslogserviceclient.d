@@ -4,7 +4,7 @@ import vibe.core.core:runTask;
 import vibe.http.client;
 
 ///
-final class SyslogServiceClient(alias AddParams=null)
+class SyslogServiceClient
 {
 private:
 	immutable string url;
@@ -59,16 +59,9 @@ public:
 	}
 
 	///
-	private string getAdditionalUrlString()
+	protected string getAdditionalUrlString()
 	{
-		static if(AddParams!=null)
-		{
-			return AddParams()~"/";
-		}
-		else
-		{
-			return "";
-		}
+		return "";
 	}
 }
 
