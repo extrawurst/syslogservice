@@ -13,6 +13,7 @@ private:
 	ushort m_port = 8888;
 	string m_hostName = "hostUnknown";
 	string m_logFolder = "./";
+	string m_fileSuffix = "";
 	RequestCallback m_requestModifierCallback;
 
 	///
@@ -21,6 +22,8 @@ private:
 	@property public void quiet(bool _quiet) { m_quiet = _quiet; }
 	///
 	@property public void hostName(string _hostname) { m_hostName = _hostname; }
+	///
+	@property public void fileSuffix(string _suffix) { m_fileSuffix = _suffix.length>0 ? "_"~_suffix : ""; }
 	///
 	@property public void logFolder(string _logFolder) { m_logFolder = _logFolder; }
 	///
@@ -80,7 +83,7 @@ private:
 		if(!m_quiet)
 			logInfo("%s",logline);
 		
-		appendToFile(m_logFolder ~ getLogFileName(),logline);
+		appendToFile(m_logFolder ~ getLogFileName(), logline);
 	}
 
 	///
@@ -88,11 +91,12 @@ private:
 	{
 		auto currentTime = Clock.currTime();
 		
-		return format("%04d-%02d-%02d_%s.log",
+		return format("%04d-%02d-%02d_%s%s.log",
 		              currentTime.year,
 		              currentTime.month,
 		              currentTime.day,
-		              m_hostName);
+		              m_hostName,
+		              m_fileSuffix);
 	}
 
 	///
