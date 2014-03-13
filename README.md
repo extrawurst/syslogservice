@@ -62,6 +62,9 @@ add the dependancy:
 }
 ```
 
+server
+-------------
+
 to host a syslogservice simply use this:
 ```
 import syslogservice;
@@ -73,6 +76,9 @@ shared static this()
 	logger.start();
 }
 ```
+
+client
+-------------
 
 more importantly this is how you can write to such a service from you code:
 ```
