@@ -66,3 +66,15 @@ public:
 		return "";
 	}
 }
+
+version(none)
+{
+	shared static this()
+	{
+		SyslogServiceClient logger = new SyslogServiceClient("http://localhost:8888/");
+
+		logger.log!"event1"();
+
+		logger.log!"event2"(["param2":"value"]);
+	}
+}

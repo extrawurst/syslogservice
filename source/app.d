@@ -13,12 +13,12 @@ shared static this()
 	bool quiet = true;
 	bool oneFilePerHour = false;
 
-	getOption("folder",&logFolder,"log folder");
-	getOption("hostport",&port,"port");
-	getOption("hostname",&hostName,"hostname");
-	getOption("quiet",&quiet,"no logging");
-	getOption("filePerHour",&oneFilePerHour,"split log files per hour");
-	getOption("file-suffix",&fileSuffix,"added to every log file");
+	getOption("folder",&logFolder,"log folder (default './'");
+	getOption("hostport",&port,"port (default '8888')");
+	getOption("hostname",&hostName,"hostname (default 'hostUnknown'");
+	getOption("quiet",&quiet,"disable logging of each request to stdout (default 'true')");
+	getOption("filePerHour",&oneFilePerHour,"split log files per hour (default is split per day)");
+	getOption("file-suffix",&fileSuffix,"added to every log filename (default is '')");
 
 	auto logger = new SysLogService();
 	logger.port = port;
@@ -37,3 +37,5 @@ shared static this()
 	logInfo("logFilesSplitByHour: %s",oneFilePerHour);
 	logInfo(" ");
 }
+
+
