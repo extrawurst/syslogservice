@@ -3,6 +3,19 @@
 import vibe.d;
 
 ///
+static bool equalComponents(T,COMPONENTS...)(T _a, T _b)
+{
+	foreach(comp; COMPONENTS)
+	{
+		static assert(__traits(compiles, mixin("_a."~comp)), "component '"~comp~"' not a member of '"~T.stringof~"'");
+		
+		mixin("if(_a."~comp~"!=_b."~comp~") return false;");
+	}
+	
+	return true;
+}
+
+///
 final class SysLogService
 {
 private:
@@ -99,9 +112,7 @@ private:
 
 		if(!m_oneLogPerHour)
 		{
-			if(currentTime.year != m_lastFileNameUpdateTime.year ||
-			   currentTime.month != m_lastFileNameUpdateTime.month ||
-			   currentTime.day != m_lastFileNameUpdateTime.day)
+			if(!equalComponents!(SysTime,"year","month","day")(currentTime,m_lastFileNameUpdateTime))
 			{
 				m_lastFileName = format("%04d-%02d-%02d_%s%s.log",
 		              currentTime.year,
@@ -115,10 +126,7 @@ private:
 		}
 		else
 		{
-			if(currentTime.year != m_lastFileNameUpdateTime.year ||
-			   currentTime.month != m_lastFileNameUpdateTime.month ||
-			   currentTime.day != m_lastFileNameUpdateTime.day ||
-			   currentTime.hour != m_lastFileNameUpdateTime.hour)
+			if(!equalComponents!(SysTime,"year","month","day","hour")(currentTime,m_lastFileNameUpdateTime))
 			{
 				m_lastFileName = format("%04d-%02d-%02d-%2d00_%s%s.log",
 				                        currentTime.year,
