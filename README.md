@@ -82,6 +82,8 @@ client
 
 more importantly this is how you can write to such a service from you code:
 ```
+import syslogserviceclient;
+
 SyslogServiceClient logger = new SyslogServiceClient("http://localhost:8888/");
 
 logger.log!"event1"();
