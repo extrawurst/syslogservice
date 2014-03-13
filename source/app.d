@@ -11,11 +11,13 @@ shared static this()
 	string fileSuffix = "";
 	string logFolder = "./";
 	bool quiet = true;
+	bool oneFilePerHour = false;
 
 	getOption("folder",&logFolder,"log folder");
 	getOption("hostport",&port,"port");
 	getOption("hostname",&hostName,"hostname");
 	getOption("quiet",&quiet,"no logging");
+	getOption("filePerHour",&oneFilePerHour,"split log files per hour");
 	getOption("file-suffix",&fileSuffix,"added to every log file");
 
 	auto logger = new SysLogService();
@@ -24,6 +26,7 @@ shared static this()
 	logger.logFolder = logFolder;
 	logger.quiet = quiet;
 	logger.fileSuffix = fileSuffix;
+	logger.oneLogPerHour = oneFilePerHour;
 
 	logger.start();
 
@@ -31,5 +34,6 @@ shared static this()
 	logInfo("quiet: %s",quiet);
 	logInfo("logfolder: '%s'",logFolder);
 	logInfo("logfilesuffix: '%s'",fileSuffix);
+	logInfo("logFilesSplitByHour: %s",oneFilePerHour);
 	logInfo(" ");
 }

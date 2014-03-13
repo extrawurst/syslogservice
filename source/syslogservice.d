@@ -14,7 +14,11 @@ private:
 	string m_hostName = "hostUnknown";
 	string m_logFolder = "./";
 	string m_fileSuffix = "";
+	bool m_oneLogPerHour = false;
 	RequestCallback m_requestModifierCallback;
+
+	SysTime m_lastFileNameUpdateTime = SysTime.min;
+	string m_lastFileName;
 
 	///
 	@property public void port(ushort _port) { m_port = _port; }
@@ -24,6 +28,8 @@ private:
 	@property public void hostName(string _hostname) { m_hostName = _hostname; }
 	///
 	@property public void fileSuffix(string _suffix) { m_fileSuffix = _suffix.length>0 ? "_"~_suffix : ""; }
+	///
+	@property public void oneLogPerHour(bool _value) { m_oneLogPerHour = _value; }
 	///
 	@property public void logFolder(string _logFolder) { m_logFolder = _logFolder; }
 	///
@@ -90,13 +96,43 @@ private:
 	string getLogFileName()
 	{
 		auto currentTime = Clock.currTime();
-		
-		return format("%04d-%02d-%02d_%s%s.log",
+
+		if(!m_oneLogPerHour)
+		{
+			if(currentTime.year != m_lastFileNameUpdateTime.year ||
+			   currentTime.month != m_lastFileNameUpdateTime.month ||
+			   currentTime.day != m_lastFileNameUpdateTime.day)
+			{
+				m_lastFileName = format("%04d-%02d-%02d_%s%s.log",
 		              currentTime.year,
 		              currentTime.month,
 		              currentTime.day,
 		              m_hostName,
 		              m_fileSuffix);
+
+				m_lastFileNameUpdateTime = currentTime;
+			}
+		}
+		else
+		{
+			if(currentTime.year != m_lastFileNameUpdateTime.year ||
+			   currentTime.month != m_lastFileNameUpdateTime.month ||
+			   currentTime.day != m_lastFileNameUpdateTime.day ||
+			   currentTime.hour != m_lastFileNameUpdateTime.hour)
+			{
+				m_lastFileName = format("%04d-%02d-%02d-%2d00_%s%s.log",
+				                        currentTime.year,
+				                        currentTime.month,
+				                        currentTime.day,
+				                        currentTime.hour,
+				                        m_hostName,
+				                        m_fileSuffix);
+				
+				m_lastFileNameUpdateTime = currentTime;
+			}
+		}
+
+		return m_lastFileName;
 	}
 
 	///
