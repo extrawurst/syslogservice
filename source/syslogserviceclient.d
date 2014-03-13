@@ -7,7 +7,7 @@ import vibe.http.client;
 class SyslogServiceClient
 {
 private:
-	immutable string url;
+	immutable string m_url;
 
 public:
 	///
@@ -16,45 +16,47 @@ public:
 		import std.string:endsWith;
 
 		if(!_url.endsWith("/"))
-			url = _url~"/";
+			m_url = _url~"/";
 		else
-			url = _url;
+			m_url = _url;
 	}
 
 	///
 	void log(string _event)(in string[string] params)
 	{
-		if(url.length == 0)
+		if(m_url.length == 0)
 			return;
 
 		runTask({
-			auto requestUrl = url~getAdditionalUrlString()~_event;
+			auto requestUrl = m_url~getAdditionalUrlString()~_event;
 
-			requestHTTP(requestUrl,
+			auto res = requestHTTP(requestUrl,
 			(scope HTTPClientRequest req) {
 				req.method = HTTPMethod.POST;
 	
 				import vibe.http.form;
 				req.writeFormBody(params);
-			},(scope HTTPClientResponse res) {});
+			});
+			scope(exit) res.dropBody();
 		});
 	}
 
 	///
 	void log(string _event)()
 	{
-		if(url.length == 0)
+		if(m_url.length == 0)
 			return;
 
 		runTask({
-			auto requestUrl = url~getAdditionalUrlString()~_event;
+			auto requestUrl = m_url~getAdditionalUrlString()~_event;
 
-			requestHTTP(requestUrl,
+			auto res = requestHTTP(requestUrl,
 			(scope HTTPClientRequest req) {
 				req.method = HTTPMethod.POST;
 				
 				req.writeBody(cast(ubyte[])"");
-			},(scope HTTPClientResponse res) {});
+			});
+			scope(exit) res.dropBody();
 		});
 	}
 
@@ -64,5 +66,3 @@ public:
 		return "";
 	}
 }
-
-
