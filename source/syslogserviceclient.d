@@ -15,7 +15,7 @@ public:
 	{
 		import std.string:endsWith;
 
-		if(!_url.endsWith("/"))
+		if(_url.length > 0 && !_url.endsWith("/"))
 			m_url = _url~"/";
 		else
 			m_url = _url;
