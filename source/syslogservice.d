@@ -25,7 +25,7 @@ final class SysLogService
 {
 private:
 	///
-	public alias RequestCallback = void delegate(string, string[], HTTPServerRequest);
+	public alias RequestCallback = void delegate(string, in string[], HTTPServerRequest);
 
 	bool m_quiet;
 	ushort m_port = 8888;
