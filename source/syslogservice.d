@@ -25,7 +25,7 @@ final class SysLogService
 {
 private:
 	///
-	public alias RequestCallback = void delegate(string,HTTPServerRequest);
+	public alias RequestCallback = void delegate(string, string[], HTTPServerRequest);
 
 	bool m_quiet;
 	ushort m_port = 8888;
@@ -94,7 +94,7 @@ private:
 			return;
 
 		if(m_requestModifierCallback)
-			m_requestModifierCallback(event, req);
+			m_requestModifierCallback(event, eventNames[0..$-1], req);
 		
 		syslog(eventNames, req.form, req.peer, req.clientAddress.port);
 	}
