@@ -32,11 +32,17 @@ private:
 	string m_hostName = "hostUnknown";
 	string m_logFolder = "./";
 	string m_fileSuffix = "";
+	bool m_dashesInFileNameTimeStamp = false;
 	bool m_oneLogPerHour = false;
 	RequestCallback m_requestModifierCallback;
 
 	SysTime m_lastFileNameUpdateTime = SysTime.min;
 	string m_lastFileName;
+
+	static immutable FORMATSTR_DAILY = "%04d-%02d-%02d_%s%s.log";
+	static immutable FORMATSTR_DAILY_SHORT = "%04d%02d%02d%s%s.log";
+	static immutable FORMATSTR_HOURLY = "%04d-%02d-%02d-%2d00_%s%s.log";
+	static immutable FORMATSTR_HOURLY_SHORT = "%04d%02d%02d%2d00%s%s.log";
 
 	///
 	@property public void port(ushort _port) { m_port = _port; }
@@ -48,6 +54,8 @@ private:
 	@property public void fileSuffix(string _suffix) { m_fileSuffix = _suffix.length>0 ? "_"~_suffix : ""; }
 	///
 	@property public void oneLogPerHour(bool _value) { m_oneLogPerHour = _value; }
+	///
+	@property public void enableDashesInTimeStampOfLogFiles(bool _value) { m_dashesInFileNameTimeStamp = _value; }
 	///
 	@property public void logFolder(string _logFolder) { m_logFolder = _logFolder; }
 	///
@@ -119,7 +127,7 @@ private:
 		{
 			if(!equalComponents!(SysTime,"year","month","day")(currentTime,m_lastFileNameUpdateTime))
 			{
-				m_lastFileName = format("%04d-%02d-%02d_%s%s.log",
+				m_lastFileName = format(m_dashesInFileNameTimeStamp?FORMATSTR_DAILY:FORMATSTR_DAILY_SHORT,
 		              currentTime.year,
 		              currentTime.month,
 		              currentTime.day,
@@ -133,7 +141,7 @@ private:
 		{
 			if(!equalComponents!(SysTime,"year","month","day","hour")(currentTime,m_lastFileNameUpdateTime))
 			{
-				m_lastFileName = format("%04d-%02d-%02d-%2d00_%s%s.log",
+				m_lastFileName = format(m_dashesInFileNameTimeStamp?FORMATSTR_HOURLY:FORMATSTR_HOURLY_SHORT,
 				                        currentTime.year,
 				                        currentTime.month,
 				                        currentTime.day,
