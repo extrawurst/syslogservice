@@ -4,3 +4,4 @@ libevent.dll
 ssleay32.dll
 syslogservice.exe
 dub.userprefs
+examples/test_client/test_client.exe
