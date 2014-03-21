@@ -2,7 +2,7 @@ module app;
 
 import vibe.d;
 
-import syslogservice;
+import syslog.service;
 
 shared static this()
 {

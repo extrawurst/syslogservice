@@ -1,4 +1,4 @@
-﻿module syslogservice;
+﻿module syslog.service;
 
 import std.traits:isSomeString;
 import std.typetuple:allSatisfy;

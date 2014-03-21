@@ -1,4 +1,4 @@
-﻿module syslogserviceclient;
+﻿module syslog.serviceclient;
 
 import vibe.core.core:runTask;
 import vibe.http.client;
@@ -32,7 +32,7 @@ public:
 
 			auto res = requestHTTP(requestUrl,
 			(scope HTTPClientRequest req) {
-				req.method = HTTPMethod.POST;
+				prepareRequest(req);
 	
 				import vibe.http.form;
 				req.writeFormBody(params);
@@ -52,7 +52,7 @@ public:
 
 			auto res = requestHTTP(requestUrl,
 			(scope HTTPClientRequest req) {
-				req.method = HTTPMethod.POST;
+				prepareRequest(req);
 				
 				req.writeBody(cast(ubyte[])"");
 			});
@@ -64,6 +64,13 @@ public:
 	protected string getAdditionalUrlString()
 	{
 		return "";
+	}
+
+	///
+	private static void prepareRequest(scope HTTPClientRequest req)
+	{
+		req.method = HTTPMethod.POST;
+		req.headers["Connection"] = "close";
 	}
 }
 
