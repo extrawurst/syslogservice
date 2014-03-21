@@ -41,8 +41,8 @@ private:
 
 	static immutable FORMATSTR_DAILY = "%04d-%02d-%02d_%s%s.log";
 	static immutable FORMATSTR_DAILY_SHORT = "%04d%02d%02d%s%s.log";
-	static immutable FORMATSTR_HOURLY = "%04d-%02d-%02d-%2d00_%s%s.log";
-	static immutable FORMATSTR_HOURLY_SHORT = "%04d%02d%02d%2d00%s%s.log";
+	static immutable FORMATSTR_HOURLY = "%04d-%02d-%02d-%02d00_%s%s.log";
+	static immutable FORMATSTR_HOURLY_SHORT = "%04d%02d%02d%02d00_%s%s.log";
 
 	///
 	@property public void port(ushort _port) { m_port = _port; }
