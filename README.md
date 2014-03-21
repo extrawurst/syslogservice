@@ -67,7 +67,7 @@ server
 
 to host a syslogservice simply use this:
 ```
-import syslogservice;
+import syslog.service;
 
 shared static this()
 {
@@ -82,7 +82,7 @@ client
 
 more importantly this is how you can write to such a service from you code:
 ```
-import syslogserviceclient;
+import syslog.serviceclient;
 
 SyslogServiceClient logger = new SyslogServiceClient("http://localhost:8888/");
 
