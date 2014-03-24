@@ -1,6 +1,7 @@
 ﻿module syslog.serviceclient;
 
 import vibe.core.core:runTask;
+import vibe.core.log:logError;
 import vibe.http.client;
 
 ///
@@ -8,8 +9,13 @@ class SyslogServiceClient
 {
 private:
 	immutable string m_url;
+	bool m_logSendErrors = false;
 
 public:
+
+	///
+	@property void logSendErrors(bool _val) { m_logSendErrors = _val; }
+
 	///
 	this(in string _url)
 	{
@@ -30,14 +36,22 @@ public:
 		runTask({
 			auto requestUrl = m_url~getAdditionalUrlString()~_event;
 
-			auto res = requestHTTP(requestUrl,
-			(scope HTTPClientRequest req) {
-				prepareRequest(req);
-	
-				import vibe.http.form;
-				req.writeFormBody(params);
-			});
-			scope(exit) res.dropBody();
+			try 
+			{
+				auto res = requestHTTP(requestUrl,
+				(scope HTTPClientRequest req) {
+					prepareRequest(req);
+		
+					import vibe.http.form;
+					req.writeFormBody(params);
+				});
+				scope(exit) res.dropBody();
+			}
+			catch(Exception e)
+			{
+				if(m_logSendErrors)
+					logError("syslog send error");
+			}
 		});
 	}
 
@@ -50,13 +64,21 @@ public:
 		runTask({
 			auto requestUrl = m_url~getAdditionalUrlString()~_event;
 
-			auto res = requestHTTP(requestUrl,
-			(scope HTTPClientRequest req) {
-				prepareRequest(req);
-				
-				req.writeBody(cast(ubyte[])"");
-			});
-			scope(exit) res.dropBody();
+			try 
+			{
+				auto res = requestHTTP(requestUrl,
+				(scope HTTPClientRequest req) {
+					prepareRequest(req);
+
+					req.writeBody(cast(ubyte[])"");
+				});
+				scope(exit) res.dropBody();
+			}
+			catch(Exception e)
+			{
+				if(m_logSendErrors)
+					logError("syslog send error");
+			}
 		});
 	}
 
@@ -70,7 +92,6 @@ public:
 	private static void prepareRequest(scope HTTPClientRequest req)
 	{
 		req.method = HTTPMethod.POST;
-		req.headers["Connection"] = "close";
 	}
 }
 

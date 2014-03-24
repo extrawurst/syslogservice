@@ -82,6 +82,7 @@ private:
 	void handleRequest(HTTPServerRequest req, HTTPServerResponse res)
 	{
 		res.statusCode = 200;
+		res.headers["Content-Length"]="0";
 		res.writeBody("");
 
 		if(req.requestURL.startsWith("/"))
