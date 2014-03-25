@@ -88,4 +88,9 @@ SyslogServiceClient logger = new SyslogServiceClient("http://localhost:8888/");
 
 logger.log!"event1"();
 logger.log!"event2"(["param2":"value"]);
+// or using the auto converter template:
+logger.log!"event3"(
+	"param2","someString",
+	"param3",42,
+	"param4",true);
 ```

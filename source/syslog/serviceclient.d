@@ -28,7 +28,7 @@ public:
 	}
 
 	///
-	void log(string _event)(in string[string] params)
+	void log(string _event)(in string[string] _params)
 	{
 		if(m_url.length == 0)
 			return;
@@ -43,7 +43,7 @@ public:
 					prepareRequest(req);
 		
 					import vibe.http.form;
-					req.writeFormBody(params);
+					req.writeFormBody(_params);
 				});
 				scope(exit) res.dropBody();
 			}
@@ -53,6 +53,33 @@ public:
 					logError("syslog send error");
 			}
 		});
+	}
+
+	///
+	void log(string _event, T...)(in T _params)
+	{
+		static assert(T.length % 2 == 0, "odd number of parameters requiered");
+
+		import std.conv:to;
+
+		if(m_url.length == 0)
+			return;
+
+		string[T.length] paramArray;
+
+		foreach(i,param; _params)
+		{
+			paramArray[i] = to!string(param);
+		}
+
+		string[string] paramAA;
+
+		foreach(i; 0..paramArray.length/2)
+		{
+			paramAA[paramArray[i*2]] = paramArray[i*2+1];
+		}
+
+		log!(_event)(paramAA);
 	}
 
 	///
@@ -103,6 +130,6 @@ version(none)
 
 		logger.log!"event1"();
 
-		logger.log!"event2"(["param2":"value"]);
+		logger.log!"event2"("param2","value");
 	}
 }
