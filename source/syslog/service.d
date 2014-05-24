@@ -1,7 +1,6 @@
 ﻿module syslog.service;
 
 import std.traits:isSomeString;
-import std.typetuple:allSatisfy;
 
 import vibe.d;
 
@@ -14,7 +13,8 @@ static bool equalComponents(T,COMPONENTS...)(T _a, T _b)
 
 		static assert(__traits(compiles, mixin("_a."~comp)), "component '"~comp~"' not a member of '"~T.stringof~"'");
 		
-		mixin("if(_a."~comp~"!=_b."~comp~") return false;");
+		if(__traits(getMember, _a, comp) != __traits(getMember, _b, comp))
+			return false;
 	}
 	
 	return true;
