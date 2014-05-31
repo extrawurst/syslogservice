@@ -10,14 +10,26 @@ static bool equalComponents(T,COMPONENTS...)(T _a, T _b)
 	foreach(comp; COMPONENTS)
 	{
 		static assert(is(typeof(comp) : string), "components must be strings");
-
-		static assert(__traits(compiles, mixin("_a."~comp)), "component '"~comp~"' not a member of '"~T.stringof~"'");
 		
 		if(__traits(getMember, _a, comp) != __traits(getMember, _b, comp))
 			return false;
 	}
 	
 	return true;
+}
+
+unittest
+{
+	struct Test{
+		int i;
+		string s;
+	}
+
+	Test t1 = Test(12,"foo");
+	Test t2 = Test(12,"bar");
+
+	assert(equalComponents!(Test,"i")(t1,t2));
+	assert(!equalComponents!(Test,"i","s")(t1,t2));
 }
 
 ///
