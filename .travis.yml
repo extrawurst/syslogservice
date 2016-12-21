@@ -4,5 +4,4 @@ sudo: false
 
 d:
   - dmd
-  - gdc
   - ldc
