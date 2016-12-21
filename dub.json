@@ -3,12 +3,12 @@
 	"description": "webservice that gathers arbitrary requests in syslog format on disk (we use this primarily to feed splunk)",
 	"license": "MIT",
 	"homepage": "https://github.com/Extrawurst/syslogservice",
-	"copyright": "Copyright © 2014, Stephan Dilly",
+	"copyright": "Copyright © 2016, Stephan Dilly",
 	"authors": [
 		"Stephan Dilly"
 	],
 	"dependencies": {
-		"vibe-d": ">=0.7.19",
+		"vibe-d": ">=0.7.30",
 	},
 	"versions": ["VibeDefaultMain"],
 }
