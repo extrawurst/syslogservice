@@ -1,4 +1,4 @@
-syslogservice
+syslogservice [![Build Status](https://travis-ci.org/Extrawurst/syslogservice.svg)](https://travis-ci.org/Extrawurst/syslogservice)
 =============
 
 This is a webservice that gathers arbitrary requests in syslog format on disk (we use this primarily to feed splunk)
