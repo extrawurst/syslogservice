@@ -10,7 +10,7 @@ this is a dub compatible package.
 run it with default settings like this:
 
 ```
-dub
+dub --config="application"
 ```
 
 which prints:
