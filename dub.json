@@ -7,8 +7,18 @@
 	"authors": [
 		"Stephan Dilly"
 	],
+	"targetType": "library",
 	"dependencies": {
-		"vibe-d": ">=0.7.30",
+		"vibe-d": "~>0.7.30",
 	},
-	"versions": ["VibeDefaultMain"],
+	"configurations":[
+		{
+			"name": "library",
+		},
+		{
+			"name": "application",
+			"targetType": "executable",
+			"versions": ["VibeDefaultMain"]	
+		}
+	]
 }
