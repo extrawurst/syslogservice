@@ -1,4 +1,4 @@
-syslogservice [![Build Status](https://api.travis-ci.org/Extrawurst/syslogservice.svg)](https://travis-ci.org/Extrawurst/syslogservice)
+syslogservice [![Build Status](https://api.travis-ci.org/Extrawurst/syslogservice.svg)](https://travis-ci.org/Extrawurst/syslogservice) [![version](https://img.shields.io/dub/v/syslogservice.svg)](https://code.dlang.org/packages/syslogservice) [![downloads](https://img.shields.io/dub/dt/syslogservice.svg)](https://code.dlang.org/packages/syslogservice)
 =============
 
 This is a webservice that gathers arbitrary requests in syslog format on disk (we use this primarily to feed splunk)
